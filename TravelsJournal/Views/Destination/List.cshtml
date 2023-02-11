@@ -1,0 +1,13 @@
+﻿@model IEnumerable<TravelsJournal.Models.DestinationDto>
+@{
+    ViewBag.Title = "List";
+}
+
+<h2>List</h2>
+@foreach(var destination in Model)
+{
+    <h2><a href="/Destination/Details/@destination.DestinationID">@destination.DestinationName</a></h2>
+    <div>Summary: @destination.DestinationSummary</div>
+    <div>Rating: @destination.RatingID</div>
+}
+

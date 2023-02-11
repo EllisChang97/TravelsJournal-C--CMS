@@ -1,0 +1,20 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create Destination</h2>
+<form action="/Destination/Create" method="POST">
+    <div>
+        <label>Name:</label> <input type="text" name="DestinationName" />
+    </div>
+    <div>
+        <label>Summary:</label> <input type="text" name="DestinationSummary" />
+    </div>
+    <div>
+        <label>Rating (1-5):</label> <input type="number" name="RatingID" />
+    </div>
+    <div>
+        <input type="submit" value="Add Destination" />
+    </div>
+</form>
