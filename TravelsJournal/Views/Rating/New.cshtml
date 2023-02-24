@@ -1,0 +1,17 @@
+﻿
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create Rating</h2>
+<form action="/Rating/Create" method="POST">
+    <div>
+        <label>Rating Description:</label> <input type="text" name="RatingDescription" />
+    </div>
+    <div>
+        <input type="submit" value="Create Rating" />
+
+    </div>
+</form>
+<a href="/rating/list">Cancel</a>

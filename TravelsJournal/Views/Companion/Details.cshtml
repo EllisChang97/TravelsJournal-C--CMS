@@ -1,0 +1,24 @@
+﻿@model TravelsJournal.Models.ViewModels.DetailsCompanion
+
+
+@{
+    ViewBag.Title = "View";
+}
+
+<a href="/Companion/List">Go back to list</a>
+<br />
+<a href="/Companion/Edit/@Model.SelectedCompanion.CompanionID">Update</a>
+<br />
+<a style="color:#ab2020;" href="/Companion/DeleteConfirm/@Model.SelectedCompanion.CompanionID">Delete</a>
+<h2>@Model.SelectedCompanion.CompanionFirstName @Model.SelectedCompanion.CompanionLastName</h2>
+
+
+
+<div>
+    <h3>Accompanied on:</h3>
+    @foreach (var destination in Model.AccompaniedDestinations)
+    {
+        <a href="/Destination/Details/@destination.DestinationID">@destination.DestinationName</a><br />
+
+    }
+</div>

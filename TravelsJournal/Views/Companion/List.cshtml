@@ -1,0 +1,11 @@
+﻿@model IEnumerable<TravelsJournal.Models.CompanionDto>
+@{
+    ViewBag.Title = "List";
+}
+
+<h2>List</h2>
+<a href="/Companion/New">New Companion</a>
+@foreach (var Companion in Model)
+{
+    <h2><a href="/Companion/Details/@Companion.CompanionID">@Companion.CompanionFirstName, @Companion.CompanionLastName</a></h2>
+}

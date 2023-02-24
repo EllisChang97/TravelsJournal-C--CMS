@@ -1,0 +1,26 @@
+﻿@model TravelsJournal.Models.ViewModels.DetailsRating
+
+
+@{
+    ViewBag.Title = "View";
+}
+
+<a href="/Rating/List">Go back to list</a>
+<br />
+<a href="/Rating/Edit/@Model.SelectedRating.RatingID">Update</a>
+<br />
+<a style="color:#ab2020;" href="/Rating/DeleteConfirm/@Model.SelectedRating.RatingID">Delete</a>
+<h2>@Model.SelectedRating.RatingID</h2>
+<div>Rating Description: @Model.SelectedRating.RatingDescription</div>
+
+
+<div style="margin-top:100px;">
+    <h3>Destinations related to this rating:</h3>
+    @foreach (var destination in Model.RelatedDestinations)
+    {
+        <a href="/Destination/Details/@destination.DestinationID">@destination.DestinationName</a>
+
+    }
+</div>
+
+

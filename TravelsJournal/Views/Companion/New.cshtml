@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create Companion</h2>
+<form action="/Companion/Create" method="POST">
+    <div>
+        <label>First Name:</label> <input type="text" name="CompanionFirstName" />
+    </div>
+    <div>
+        <label>Last Name:</label> <input type="text" name="CompanionLastName" />
+    </div>
+    <div>
+        <input type="submit" value="Create Companion" />
+
+    </div>
+</form>
+<a href="/companion/list">Cancel</a>

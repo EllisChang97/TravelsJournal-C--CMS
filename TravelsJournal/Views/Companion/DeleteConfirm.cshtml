@@ -1,0 +1,12 @@
+﻿@model TravelsJournal.Models.CompanionDto
+
+@{
+    ViewBag.Title = "DeleteConfirm";
+}
+
+<h2>Are you sure you want to delete this Companion?</h2>
+<a href="/Companion/List">Cancel</a>
+<h3>Name: @Model.CompanionFirstName @Model.CompanionLastName</h3>
+<form action="/Companion/Delete/@Model.CompanionID" method="POST">
+    <input type="submit" value="Confirm Delete" />
+</form>

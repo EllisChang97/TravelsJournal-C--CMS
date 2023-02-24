@@ -1,12 +1,44 @@
-﻿@model TravelsJournal.Models.DestinationDto
+﻿@model TravelsJournal.Models.ViewModels.DetailsDestination
 
 
 @{
     ViewBag.Title = "View";
 }
 
-<a href="/Destination/List">Go back to list</a>
-<h2>@Model.DestinationName</h2>
-<h3>Summary: @Model.DestinationSummary</h3>
-<h3>Rating: @Model.RatingID</h3>
+
+
+<form action="/Destination/List">
+    <input type="submit" value="Go back to list" />
+</form>
+
+<form action="/Destination/Edit/@Model.SelectedDestination.DestinationID">
+    <input type="submit" value="Edit Destination" />
+</form>
+
+
+<h2>@Model.SelectedDestination.DestinationName</h2>
+<h3>Summary: @Model.SelectedDestination.DestinationSummary</h3>
+<h3>Rating: <a href="/Rating/Details/@Model.SelectedDestination.RatingID">@Model.SelectedDestination.RatingID / 5</a></h3>
+
+
+<h3>Companions: </h3>
+@foreach (var companion in Model.AccompaniedCompanions)
+{
+    <a href="/companion/details/@companion.CompanionID">@companion.CompanionFirstName @companion.CompanionLastName</a>
+    <a href="/destination/unassociate/@Model.SelectedDestination.DestinationID?CompanionID=@companion.CompanionID">   [X]</a>
+    <br />
+}
+
+<div>
+    <h3>Add a new companion you forgot came to @Model.SelectedDestination.DestinationName!</h3>
+    <form method="POST" action="/Destination/Associate/@Model.SelectedDestination.DestinationID/">
+        <select name="CompanionID">
+            @foreach (var companion in Model.AvailableCompanions)
+            {
+                <option value="@companion.CompanionID">@companion.CompanionFirstName @companion.CompanionLastName</option>
+            }
+        </select>
+        <input type="submit" value="Associate Companion" />
+    </form>
+</div>
 

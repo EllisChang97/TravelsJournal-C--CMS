@@ -1,0 +1,21 @@
+﻿@model TravelsJournal.Models.RatingDto
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Update Rating @Model.RatingID</h2>
+<form action="/Rating/Update/@Model.RatingID" method="POST">
+    <div style="display:none;">
+        @* Pass through the Rating ID *@
+        <input type="number" name="RatingID" value="@Model.RatingID" />
+    </div>
+    <div>
+        <label>Rating Description:</label> <input type="text" name="RatingDescription" value="@Model.RatingDescription" />
+    </div>
+    <div>
+        <input type="submit" value="Update Rating" />
+
+    </div>
+</form>
+<a href="/Rating/List">Cancel</a>

@@ -6,31 +6,33 @@ using System.Web.Mvc;
 using System.Net.Http;
 using System.Diagnostics;
 using TravelsJournal.Models;
+using TravelsJournal.Models.ViewModels;
 using System.Web.Script.Serialization;
 
 namespace TravelsJournal.Controllers
 {
-
+    //$1
     public class DestinationController : Controller
     {
         private static readonly HttpClient client;
         private JavaScriptSerializer jss = new JavaScriptSerializer();
 
-
         static DestinationController()
         {
             client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:44346/api/destinationdata/");
+            client.BaseAddress = new Uri("https://localhost:44346/api/");
         }
 
 
+        //$2
         // GET: Destination/List
+        // https://localhost:44346/destination/list
         public ActionResult List()
         {
             //to communicate with our destination data API to retrieve a list of destinations
             //curl https://localhost:44346/api/destinationdata/listdestinations
 
-            string url = "listdestinations";
+            string url = "destinationdata/listdestinations";
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             //Debug.WriteLine("The response code is ");
@@ -43,24 +45,95 @@ namespace TravelsJournal.Controllers
             return View(destinations);
         }
 
+
+
+
+
+        //$3
         // GET: Destination/Details/5
         public ActionResult Details(int id)
         {
+            DetailsDestination ViewModel = new DetailsDestination();
 
-            //to communicate with our destination data API to retrieve one destinations
+            //to communicate with our destination data API to retrieve one destination
             //curl https://localhost:44346/api/destinationdata/finddestination/{id}
 
-            string url = "finddestination/"+id;
+            string url = "destinationdata/finddestination/" + id;
             HttpResponseMessage response = client.GetAsync(url).Result;
 
             //Debug.WriteLine("The response code is ");
             //Debug.WriteLine(response.StatusCode);
 
-            DestinationDto selecteddestination = response.Content.ReadAsAsync<DestinationDto>().Result;
+            DestinationDto SelectedDestination = response.Content.ReadAsAsync<DestinationDto>().Result;
             //Debug.WriteLine("Destination recieved : ");
             //Debug.WriteLine(selecteddestination.DestinationName);
 
-            return View(selecteddestination);
+            ViewModel.SelectedDestination = SelectedDestination;
+
+            //HttpClient companionClient = new HttpClient();
+            //companionClient.BaseAddress = new Uri("https://localhost:44346/api/");
+
+            //show associated companions with this destination
+            url = "companiondata/listcompanionsfordestination/" + id;
+            response = client.GetAsync(url).Result;
+            IEnumerable<CompanionDto> AccompaniedCompanions = response.Content.ReadAsAsync<IEnumerable<CompanionDto>>().Result;
+
+            ViewModel.AccompaniedCompanions = AccompaniedCompanions;
+
+            //############### Not sure if I need this...... ###############
+            url = "companiondata/listcompanionsnotaccompaniedondestination/" + id;
+            response = client.GetAsync(url).Result;
+            IEnumerable<CompanionDto> AvailableCompanions = response.Content.ReadAsAsync<IEnumerable<CompanionDto>>().Result;
+
+            ViewModel.AvailableCompanions = AvailableCompanions;
+
+
+            // ## newest addition - trying to get the rating description on my destination details page
+            //url = "ratingforthisdestination/" + id;
+            //response = client.GetAsync(url).Result;
+            //RatingDto RatingForDestination = response.Content.ReadAsAsync<RatingDto>().Result;
+
+            //ViewModel.RatingForDestination = RatingForDestination;
+
+
+            return View(ViewModel);
+        }
+
+
+        //#### I think all of this is the linking code between the tables
+
+        //$4
+        //POST: Destination/Associate/{destinationid}
+        [HttpPost]
+        public ActionResult Associate(int id, int CompanionID)
+        {
+            Debug.WriteLine("Attempting to associate destination :" + id + " with companion " + CompanionID);
+
+            //call our api to associate destination with companion
+            string url = "destinationdata/associatedestinationwithcompanion/" + id + "/" + CompanionID;
+            HttpContent content = new StringContent("");
+            content.Headers.ContentType.MediaType = "application/json";
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+            return RedirectToAction("Details/" + id);
+        }
+
+
+        //#### this is unlinking them?
+        //$5
+        //Get: Destination/UnAssociate/{id}?CompanionID={CompanionID}
+        [HttpGet]
+        public ActionResult UnAssociate(int id, int CompanionID)
+        {
+            Debug.WriteLine("Attempting to unassociate destination :" + id + " with companion: " + CompanionID);
+
+            //call our api to associate destination with companion
+            string url = "destinationdata/unassociatedestinationwithcompanion/" + id + "/" + CompanionID;
+            HttpContent content = new StringContent("");
+            content.Headers.ContentType.MediaType = "application/json";
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+            return RedirectToAction("Details/" + id);
         }
 
         public ActionResult Error()
@@ -68,12 +141,28 @@ namespace TravelsJournal.Controllers
             return View();
         }
 
+
+
+
+
+
+        //$6
         // GET: Destination/New
         public ActionResult New()
         {
-            return View();
+            //information about all ratings in the system.
+            //GET api/ratingdata/listratings
+
+            string url = "ratingdata/listratings";
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            IEnumerable<RatingDto> RatingOptions = response.Content.ReadAsAsync<IEnumerable<RatingDto>>().Result;
+
+
+            return View(RatingOptions);
         }
 
+
+        //$7
         // POST: Destination/Create
         [HttpPost]
         public ActionResult Create(Destination destination)
@@ -81,8 +170,8 @@ namespace TravelsJournal.Controllers
             Debug.WriteLine("the json payload is :");
             //Debug.WriteLine(destination.DestinationName);
             //objective: add a new destination into our system using the API
-            //curl -H "Content-Type:application/json" -d @animal.json https://localhost:44346/api/destinationdata/adddestination
-            string url = "adddestination";
+            //curl -H "Content-Type:application/json" -d @destination.json https://localhost:44346/api/destinationdata/adddestination
+            string url = "destinationdata/adddestination";
 
             string jsonpayload = jss.Serialize(destination);
 
@@ -103,17 +192,60 @@ namespace TravelsJournal.Controllers
 
         }
 
+
+        //$10
         // GET: Destination/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            UpdateDestination ViewModel = new UpdateDestination();
+
+            //the existing destination information
+            string url = "destinationdata/finddestination/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            DestinationDto SelectedDestination = response.Content.ReadAsAsync<DestinationDto>().Result;
+            
+            ViewModel.SelectedDestination = SelectedDestination;
+
+            // all ratings to choose from when updating this destination
+            //the existing destination information
+            url = "ratingdata/listratings/";
+            response = client.GetAsync(url).Result;
+            IEnumerable<RatingDto> RatingOptions = response.Content.ReadAsAsync<IEnumerable<RatingDto>>().Result;
+
+            ViewModel.RatingOptions = RatingOptions;
+
+            return View(ViewModel);
+
+            //used to be just this ###
+            //return View();
         }
 
+
+        //$11
         // POST: Destination/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Update(int id, Destination destination)
         {
-            try
+
+            string url = "destinationdata/updatedestination/" + id;
+            string jsonpayload = jss.Serialize(destination);
+            HttpContent content = new StringContent(jsonpayload);
+            content.Headers.ContentType.MediaType = "application/json";
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+            Debug.WriteLine(content);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return RedirectToAction("Error");
+            }
+
+
+
+            //##used to be this 
+            /* try
             {
                 // TODO: Add update logic here
 
@@ -122,28 +254,39 @@ namespace TravelsJournal.Controllers
             catch
             {
                 return View();
-            }
+            } */
         }
 
+
+        //$12
         // GET: Destination/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult DeleteConfirm(int id)
         {
-            return View();
+            string url = "destinationdata/finddestination/" + id;
+            HttpResponseMessage response = client.GetAsync(url).Result;
+            DestinationDto selecteddestination = response.Content.ReadAsAsync<DestinationDto>().Result;
+            return View(selecteddestination);
         }
 
+
+        //$13
         // POST: Destination/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
 
-                return RedirectToAction("Index");
-            }
-            catch
+            string url = "destinationdata/deletedestination/" + id;
+            HttpContent content = new StringContent("");
+            content.Headers.ContentType.MediaType = "application/json";
+            HttpResponseMessage response = client.PostAsync(url, content).Result;
+
+            if (response.IsSuccessStatusCode)
             {
-                return View();
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return RedirectToAction("Error");
             }
         }
     }

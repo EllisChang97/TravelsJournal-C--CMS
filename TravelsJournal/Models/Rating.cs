@@ -14,4 +14,11 @@ namespace TravelsJournal.Models
 
         public string RatingDescription { get; set; }
     }
+
+    public class RatingDto
+    {
+        public int RatingID { get; set; }
+
+        public string RatingDescription { get; set; }
+    }
 }

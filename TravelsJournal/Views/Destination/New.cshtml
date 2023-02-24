@@ -1,4 +1,5 @@
-﻿
+﻿@model IEnumerable<TravelsJournal.Models.RatingDto>
+
 @{
     ViewBag.Title = "Create";
 }
@@ -12,9 +13,18 @@
         <label>Summary:</label> <input type="text" name="DestinationSummary" />
     </div>
     <div>
-        <label>Rating (1-5):</label> <input type="number" name="RatingID" />
+        <label>Rating ID:</label> 
+        <select name="RatingID">
+            @foreach (var rating in Model)
+            {
+                <option value="@rating.RatingID">@rating.RatingDescription</option>
+
+            }
+        </select>
+
     </div>
     <div>
         <input type="submit" value="Add Destination" />
     </div>
 </form>
+<a href="/destination/list">Back</a>

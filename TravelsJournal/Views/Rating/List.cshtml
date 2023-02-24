@@ -1,0 +1,13 @@
+﻿@model IEnumerable<TravelsJournal.Models.RatingDto>
+@{
+    ViewBag.Title = "List";
+}
+
+<h2>List</h2>
+<a href="/Rating/New">New Rating</a>
+@foreach (var Rating in Model)
+{
+    <h2><a href="/Rating/Details/@Rating.RatingID">@Rating.RatingID</a></h2>
+    <div>Rating Description: @Rating.RatingDescription</div>
+
+}

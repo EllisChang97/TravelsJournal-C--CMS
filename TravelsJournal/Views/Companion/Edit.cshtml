@@ -1,0 +1,25 @@
+﻿@model TravelsJournal.Models.CompanionDto
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Update Companion</h2>
+<form action="/Companion/Update/@Model.CompanionID" method="POST">
+    <div style="display:none;">
+        @* Pass through the Companion ID *@
+        <input type="text" name="CompanionID" value="@Model.CompanionID" />
+    </div>
+    <div>
+        <label>First Name:</label> <input type="text" name="CompanionFirstName" value="@Model.CompanionFirstName" />
+    </div>
+    <div>
+        <label>Last Name:</label> <input type="text" name="CompanionLastName" value="@Model.CompanionLastName" />
+    </div>
+
+    <div>
+        <input type="submit" value="Update Companion" />
+
+    </div>
+</form>
+<a href="/companion/list">Cancel</a>

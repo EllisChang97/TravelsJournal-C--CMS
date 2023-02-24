@@ -10,9 +10,12 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using TravelsJournal.Models;
 using System.Diagnostics;
+using TravelsJournal.Migrations;
 
 namespace TravelsJournal.Controllers
 {
+
+    //$1
     public class DestinationDataController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -23,7 +26,12 @@ namespace TravelsJournal.Controllers
 
         // GET: api/DestinationData/ListDestinations
         [HttpGet]
-        public IEnumerable<DestinationDto> ListDestinations()
+        [ResponseType(typeof(DestinationDto))]
+
+        //used to be this ##
+        //public IEnumerable<DestinationDto> ListDestinations()
+        public IHttpActionResult ListDestinations()
+
         {
             List<Destination> Destinations = db.Destinations.ToList();
             List<DestinationDto> DestinationDtos = new List<DestinationDto>();
@@ -36,13 +44,119 @@ namespace TravelsJournal.Controllers
                 RatingID = a.Rating.RatingID
             }));
 
-            return DestinationDtos;
+            //##notice how there is no companion 'Keeper' column
+
+            return Ok(DestinationDtos);
 
         }
 
-        // GET: api/DestinationData/FindDestination/5
-        [ResponseType(typeof(Destination))]
+
+        //$2
         [HttpGet]
+        [ResponseType(typeof(DestinationDto))]
+        public IHttpActionResult ListDestinationsForRating(int id)  
+        {
+            List<Destination> Destinations = db.Destinations.Where(a => a.RatingID == id).ToList();
+            List<DestinationDto> DestinationDtos = new List<DestinationDto>();
+
+            Destinations.ForEach(a => DestinationDtos.Add(new DestinationDto()
+            {
+                DestinationID = a.DestinationID,
+                DestinationName = a.DestinationName,
+                DestinationSummary = a.DestinationSummary,
+                RatingID = a.Rating.RatingID
+                //RatingDescription = a.Rating.RatingDescription    ##Not sure how to add a column to the destination table for the rating description
+            }));
+
+            return Ok(DestinationDtos);
+        }
+
+
+
+        //$3
+        [HttpGet]
+        [ResponseType(typeof(DestinationDto))]
+        public IHttpActionResult ListDestinationsForCompanion(int id)
+        {
+            //all destinations that have companions which match with our ID
+            List<Destination> Destinations = db.Destinations.Where(
+                a => a.Companions.Any(
+                    c => c.CompanionID == id
+                )).ToList();
+            List<DestinationDto> DestinationDtos = new List<DestinationDto>();
+
+            Destinations.ForEach(a => DestinationDtos.Add(new DestinationDto()
+            {
+                DestinationID = a.DestinationID,
+                DestinationName = a.DestinationName,
+                DestinationSummary = a.DestinationSummary,
+                RatingID = a.Rating.RatingID
+                //RatingDescription = a.Rating.RatingDescription    ##Not sure how to add a column to the destination table for the rating description
+            }));
+
+            return Ok(DestinationDtos);
+        }
+
+
+        //$4
+        [HttpPost]
+        [Route("api/DestinationData/AssociateDestinationWithCompanion/{destinationid}/{companionid}")]
+        public IHttpActionResult AssociateDestinationWithCompanion(int destinationid, int companionid)
+        {
+
+            Destination SelectedDestination = db.Destinations.Include(a => a.Companions).Where(a => a.DestinationID == destinationid).FirstOrDefault();
+            Companion SelectedCompanion = db.Companions.Find(companionid); 
+
+            if (SelectedDestination == null || SelectedCompanion == null)
+            {
+                return NotFound();
+            }
+
+            Debug.WriteLine("input destination id is: " + destinationid);
+            Debug.WriteLine("selected destination name is: " + SelectedDestination.DestinationName);
+            Debug.WriteLine("input companion id is: " + companionid);
+            Debug.WriteLine("selected companion name is: " + SelectedCompanion.CompanionFirstName);
+
+
+            SelectedDestination.Companions.Add(SelectedCompanion);
+            db.SaveChanges();
+
+            return Ok();
+        }
+
+
+
+        //$5
+        [HttpPost]
+        [Route("api/DestinationData/UnAssociateDestinationWithCompanion/{destinationid}/{companionid}")]
+        public IHttpActionResult UnAssociateDestinationWithCompanion(int destinationid, int companionid)
+        {
+
+            Destination SelectedDestination = db.Destinations.Include(a => a.Companions).Where(a => a.DestinationID == destinationid).FirstOrDefault();
+            Companion SelectedCompanion = db.Companions.Find(companionid); //## come back to this error (Companions is in red)
+
+            if (SelectedDestination == null || SelectedCompanion == null)
+            {
+                return NotFound();
+            }
+
+            Debug.WriteLine("input destination id is: " + destinationid);
+            Debug.WriteLine("selected destination name is: " + SelectedDestination.DestinationName);
+            Debug.WriteLine("input companion id is: " + companionid);
+            Debug.WriteLine("selected companion name is: " + SelectedCompanion.CompanionFirstName);
+
+
+            SelectedDestination.Companions.Remove(SelectedCompanion);
+            db.SaveChanges();
+
+            return Ok();
+        }
+
+
+        // GET: api/DestinationData/FindDestination/5
+        //$6
+        [HttpGet]
+        [ResponseType(typeof(DestinationDto))] 
         public IHttpActionResult FindDestination(int id)
         {
             Destination Destination = db.Destinations.Find(id);
@@ -52,6 +166,8 @@ namespace TravelsJournal.Controllers
                 DestinationName = Destination.DestinationName,
                 DestinationSummary = Destination.DestinationSummary,
                 RatingID = Destination.Rating.RatingID
+                //RatingDescription = a.Rating.RatingDescription    ##Not sure how to add a column to the destination table for the rating description
+
             };
 
             if (Destination == null)
@@ -64,6 +180,8 @@ namespace TravelsJournal.Controllers
 
         //here i think i need to use the JSON data
         // POST: api/DestinationData/UpdateDestination/5
+
+        //$7
         [ResponseType(typeof(void))]
         [HttpPost]
         public IHttpActionResult UpdateDestination(int id, Destination destination)
@@ -109,8 +227,9 @@ namespace TravelsJournal.Controllers
         }
 
 
-        //here i think i need to use the JSON data
         // POST: api/DestinationData/AddDestination
+
+        //$8
         [ResponseType(typeof(Destination))]
         [HttpPost]
         public IHttpActionResult AddDestination(Destination destination)
@@ -126,6 +245,9 @@ namespace TravelsJournal.Controllers
             return CreatedAtRoute("DefaultApi", new { id = destination.DestinationID }, destination);
         }
 
+
+
+        //$9
         // POST: api/DestinationData/DeleteDestination/5
         [ResponseType(typeof(Destination))]
         [HttpPost]

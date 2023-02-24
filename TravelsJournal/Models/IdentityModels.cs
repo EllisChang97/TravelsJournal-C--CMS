@@ -35,5 +35,7 @@ namespace TravelsJournal.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<TravelsJournal.Models.Companion> Companions { get; set; }
     }
 }

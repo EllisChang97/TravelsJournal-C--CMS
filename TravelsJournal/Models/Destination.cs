@@ -39,6 +39,8 @@ namespace TravelsJournal.Models
         public string DestinationSummary { get; set; }
         public int RatingID { get; set; }
 
+        //need to add the companions column ... actually i dont think so 
+
     }
 
 

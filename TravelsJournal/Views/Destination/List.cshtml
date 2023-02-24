@@ -1,13 +1,31 @@
-﻿@model IEnumerable<TravelsJournal.Models.DestinationDto>
+﻿ @model IEnumerable<TravelsJournal.Models.DestinationDto>
 @{
     ViewBag.Title = "List";
 }
 
-<h2>List</h2>
-@foreach(var destination in Model)
-{
-    <h2><a href="/Destination/Details/@destination.DestinationID">@destination.DestinationName</a></h2>
-    <div>Summary: @destination.DestinationSummary</div>
-    <div>Rating: @destination.RatingID</div>
-}
+<style>
+    /*body {
+        background-color: #87CEEB;
+    }
 
+    h2 a {
+        color: #F5F5DC;
+    }*/
+</style>
+
+<body>
+    <h2>Destination List</h2>
+
+    <form action="/destination/new">
+        <input type="submit" value="New Destination" />
+    </form>
+
+    @foreach (var destination in Model)
+    {
+        <h2><a href="/Destination/Details/@destination.DestinationID">@destination.DestinationName</a></h2>
+        <div>Summary: @destination.DestinationSummary</div>
+        <div>Rating: @destination.RatingID / 5</div>
+    }
+
+</body>
+ 
