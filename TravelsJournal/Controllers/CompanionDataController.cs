@@ -61,7 +61,7 @@ namespace TravelsJournal.Controllers
 
         [HttpGet]
         [ResponseType(typeof(CompanionDto))]
-        public IHttpActionResult ListCompanionsNotAccompaniedOnDestination(int id) //## idk if this needs to be named something else
+        public IHttpActionResult ListCompanionsNotAccompaniedOnDestination(int id) 
         {
             List<Companion> Companions = db.Companions.Where(
                 c => !c.Destinations.Any(

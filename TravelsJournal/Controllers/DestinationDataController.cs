@@ -15,7 +15,6 @@ using TravelsJournal.Migrations;
 namespace TravelsJournal.Controllers
 {
 
-    //$1
     public class DestinationDataController : ApiController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -28,8 +27,6 @@ namespace TravelsJournal.Controllers
         [HttpGet]
         [ResponseType(typeof(DestinationDto))]
 
-        //used to be this ##
-        //public IEnumerable<DestinationDto> ListDestinations()
         public IHttpActionResult ListDestinations()
 
         {
@@ -44,14 +41,11 @@ namespace TravelsJournal.Controllers
                 RatingID = a.Rating.RatingID
             }));
 
-            //##notice how there is no companion 'Keeper' column
 
             return Ok(DestinationDtos);
 
         }
 
-
-        //$2
         [HttpGet]
         [ResponseType(typeof(DestinationDto))]
         public IHttpActionResult ListDestinationsForRating(int id)  
@@ -65,7 +59,6 @@ namespace TravelsJournal.Controllers
                 DestinationName = a.DestinationName,
                 DestinationSummary = a.DestinationSummary,
                 RatingID = a.Rating.RatingID
-                //RatingDescription = a.Rating.RatingDescription    ##Not sure how to add a column to the destination table for the rating description
             }));
 
             return Ok(DestinationDtos);
@@ -73,7 +66,6 @@ namespace TravelsJournal.Controllers
 
 
 
-        //$3
         [HttpGet]
         [ResponseType(typeof(DestinationDto))]
         public IHttpActionResult ListDestinationsForCompanion(int id)
@@ -91,14 +83,12 @@ namespace TravelsJournal.Controllers
                 DestinationName = a.DestinationName,
                 DestinationSummary = a.DestinationSummary,
                 RatingID = a.Rating.RatingID
-                //RatingDescription = a.Rating.RatingDescription    ##Not sure how to add a column to the destination table for the rating description
             }));
 
             return Ok(DestinationDtos);
         }
 
 
-        //$4
         [HttpPost]
         [Route("api/DestinationData/AssociateDestinationWithCompanion/{destinationid}/{companionid}")]
         public IHttpActionResult AssociateDestinationWithCompanion(int destinationid, int companionid)
@@ -126,14 +116,13 @@ namespace TravelsJournal.Controllers
 
 
 
-        //$5
         [HttpPost]
         [Route("api/DestinationData/UnAssociateDestinationWithCompanion/{destinationid}/{companionid}")]
         public IHttpActionResult UnAssociateDestinationWithCompanion(int destinationid, int companionid)
         {
 
             Destination SelectedDestination = db.Destinations.Include(a => a.Companions).Where(a => a.DestinationID == destinationid).FirstOrDefault();
-            Companion SelectedCompanion = db.Companions.Find(companionid); //## come back to this error (Companions is in red)
+            Companion SelectedCompanion = db.Companions.Find(companionid); 
 
             if (SelectedDestination == null || SelectedCompanion == null)
             {
@@ -154,7 +143,6 @@ namespace TravelsJournal.Controllers
 
 
         // GET: api/DestinationData/FindDestination/5
-        //$6
         [HttpGet]
         [ResponseType(typeof(DestinationDto))] 
         public IHttpActionResult FindDestination(int id)
@@ -166,7 +154,6 @@ namespace TravelsJournal.Controllers
                 DestinationName = Destination.DestinationName,
                 DestinationSummary = Destination.DestinationSummary,
                 RatingID = Destination.Rating.RatingID
-                //RatingDescription = a.Rating.RatingDescription    ##Not sure how to add a column to the destination table for the rating description
 
             };
 
@@ -181,7 +168,6 @@ namespace TravelsJournal.Controllers
         //here i think i need to use the JSON data
         // POST: api/DestinationData/UpdateDestination/5
 
-        //$7
         [ResponseType(typeof(void))]
         [HttpPost]
         public IHttpActionResult UpdateDestination(int id, Destination destination)
@@ -229,7 +215,6 @@ namespace TravelsJournal.Controllers
 
         // POST: api/DestinationData/AddDestination
 
-        //$8
         [ResponseType(typeof(Destination))]
         [HttpPost]
         public IHttpActionResult AddDestination(Destination destination)
@@ -247,7 +232,6 @@ namespace TravelsJournal.Controllers
 
 
 
-        //$9
         // POST: api/DestinationData/DeleteDestination/5
         [ResponseType(typeof(Destination))]
         [HttpPost]

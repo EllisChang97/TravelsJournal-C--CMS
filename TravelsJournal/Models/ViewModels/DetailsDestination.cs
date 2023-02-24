@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-//This is an empty controller that I made 
 
 namespace TravelsJournal.Models.ViewModels
 {

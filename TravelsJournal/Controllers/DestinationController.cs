@@ -11,7 +11,6 @@ using System.Web.Script.Serialization;
 
 namespace TravelsJournal.Controllers
 {
-    //$1
     public class DestinationController : Controller
     {
         private static readonly HttpClient client;
@@ -24,7 +23,6 @@ namespace TravelsJournal.Controllers
         }
 
 
-        //$2
         // GET: Destination/List
         // https://localhost:44346/destination/list
         public ActionResult List()
@@ -49,7 +47,6 @@ namespace TravelsJournal.Controllers
 
 
 
-        //$3
         // GET: Destination/Details/5
         public ActionResult Details(int id)
         {
@@ -80,7 +77,6 @@ namespace TravelsJournal.Controllers
 
             ViewModel.AccompaniedCompanions = AccompaniedCompanions;
 
-            //############### Not sure if I need this...... ###############
             url = "companiondata/listcompanionsnotaccompaniedondestination/" + id;
             response = client.GetAsync(url).Result;
             IEnumerable<CompanionDto> AvailableCompanions = response.Content.ReadAsAsync<IEnumerable<CompanionDto>>().Result;
@@ -100,9 +96,7 @@ namespace TravelsJournal.Controllers
         }
 
 
-        //#### I think all of this is the linking code between the tables
 
-        //$4
         //POST: Destination/Associate/{destinationid}
         [HttpPost]
         public ActionResult Associate(int id, int CompanionID)
@@ -119,8 +113,6 @@ namespace TravelsJournal.Controllers
         }
 
 
-        //#### this is unlinking them?
-        //$5
         //Get: Destination/UnAssociate/{id}?CompanionID={CompanionID}
         [HttpGet]
         public ActionResult UnAssociate(int id, int CompanionID)
@@ -146,7 +138,6 @@ namespace TravelsJournal.Controllers
 
 
 
-        //$6
         // GET: Destination/New
         public ActionResult New()
         {
@@ -162,7 +153,6 @@ namespace TravelsJournal.Controllers
         }
 
 
-        //$7
         // POST: Destination/Create
         [HttpPost]
         public ActionResult Create(Destination destination)
@@ -193,7 +183,6 @@ namespace TravelsJournal.Controllers
         }
 
 
-        //$10
         // GET: Destination/Edit/5
         public ActionResult Edit(int id)
         {
@@ -216,12 +205,10 @@ namespace TravelsJournal.Controllers
 
             return View(ViewModel);
 
-            //used to be just this ###
-            //return View();
+            
         }
 
 
-        //$11
         // POST: Destination/Edit/5
         [HttpPost]
         public ActionResult Update(int id, Destination destination)
@@ -244,21 +231,10 @@ namespace TravelsJournal.Controllers
 
 
 
-            //##used to be this 
-            /* try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            } */
+            
         }
 
 
-        //$12
         // GET: Destination/Delete/5
         public ActionResult DeleteConfirm(int id)
         {
@@ -269,7 +245,6 @@ namespace TravelsJournal.Controllers
         }
 
 
-        //$13
         // POST: Destination/Delete/5
         [HttpPost]
         public ActionResult Delete(int id)

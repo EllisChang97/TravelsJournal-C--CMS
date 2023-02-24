@@ -25,7 +25,7 @@ namespace TravelsJournal.Controllers
 
 
 
-        //$1
+        
         // GET: Rating/List
         public ActionResult List()
         {
@@ -48,7 +48,7 @@ namespace TravelsJournal.Controllers
         }
 
 
-        //$2 
+        
         // GET: Rating/Details/5
         public ActionResult Details(int id)
         {
@@ -96,7 +96,7 @@ namespace TravelsJournal.Controllers
 
 
 
-        //$3
+        
         // POST: Rating/Create
         [HttpPost]
         public ActionResult Create(Rating Rating)
@@ -127,7 +127,6 @@ namespace TravelsJournal.Controllers
 
         }
 
-        //$4
         // GET: Rating/Edit/5
         public ActionResult Edit(int id)
         {
@@ -138,7 +137,6 @@ namespace TravelsJournal.Controllers
         }
 
 
-        //$5
         // POST: Rating/Update/5
         [HttpPost]
         public ActionResult Update(int id, Rating Rating)
@@ -161,7 +159,6 @@ namespace TravelsJournal.Controllers
         }
 
 
-        //$6
         // GET: Rating/Delete/5
         public ActionResult DeleteConfirm(int id)
         {
@@ -173,7 +170,6 @@ namespace TravelsJournal.Controllers
 
 
 
-        //$7
         // POST: Rating/Delete/5
         [HttpPost]
         public ActionResult Delete(int id)
